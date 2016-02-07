@@ -11,7 +11,7 @@ class File_organiser(object):
 	'A class to organise file in a direcory'
 
 	#class variables
-	PATH = "//"
+	PATH = "/home/anant/pyScript/"
 	DIR = {
 		"programming_files":0,
 		"video_files" : 0,
@@ -36,18 +36,18 @@ class File_organiser(object):
 		#making desired directory if not present
 		try:
 			if self.DIR.get(str) == 0:
-				os.makedirs(self.PATH + str)
+				os.makedirs(os.path.join(self.PATH , str))
 				print "making " + str + " directory"
 				self.DIR[str] = 1
 
 		except OSError:
-			if not os.path.isdir(self.PATH + str):
+			if not os.path.isdir(os.path.join(self.PATH , str)):
 				raise
 
 	def transfer_to_directory(self,file,str):
-		file_name = self.PATH + file 
+		file_name = os.path.join(self.PATH , file) 
 		try:
-			shutil.move(file_name,self.PATH + str)
+			shutil.move(file_name,os.path.join(self.PATH , str))
 			print "moving " + file + " to " + str + " directory"
 		except shutil.Error:
 			print "ERROR: " + file + " already exists in " + " " + str + " directory "
@@ -85,6 +85,7 @@ class File_organiser(object):
 			return False
 
 	def start_organisation(self):
+		Check = True
 		Check = self.path_checker()
 
 		if Check :
@@ -109,11 +110,10 @@ class File_organiser(object):
 
 def main():
 	organiser = File_organiser()
-	organiser.get_path()
+	#organiser.get_path()
 	organiser.start_organisation()
 
 if __name__ == "__main__":
 	main()
-
 
 

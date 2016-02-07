@@ -53,14 +53,6 @@ class Programming_files_Sorter(organisation_via_compression_decompression):
 				
 				self.decompress_file(file,format_dir_key + "_files")
 
-# def main():
-# 	organiser = Programming_files_Sorter()
-# 	organiser.get_path()
-# 	# organiser.set_path("/home/anant/pyScript/programming_files/")
-# 	organiser.start_organisation()
-
-# if __name__ == "__main__":
-# 	main()
 
 def main():
 	organiser = organisation_via_compression_decompression()

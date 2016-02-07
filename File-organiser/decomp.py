@@ -1,4 +1,4 @@
-	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Name:        File-Organiser
 # Purpose:     To organize files according to their extensions
 #
@@ -31,29 +31,27 @@ class organisation_via_compression_decompression(File_organiser):
 
 
 	def decompress_file(self,file,str):
-		zfile = zipfile.ZipFile(os.path.join(self.PATH , str,file))
-		zfile.extractall(os.path.join(self.PATH , str))
-		print "decompressing it in : " + os.path.join(self.PATH , str) + " directory"
+		zfile = zipfile.ZipFile(self.PATH + str + "/" + file)
+		zfile.extractall(self.PATH + str)
+		print "decompressing it in : " + self.PATH + str + " directory"
 		print "removing compressed file"
-		os.remove(os.path.join(self.PATH , str,file)) 
+		os.remove(self.PATH + str + "/" + file) 
 
- 
+
 	def transfer_to_directory(self,file,str):
 		#making desired directory
 		super(organisation_via_compression_decompression,self).make_directory(str)
 
-		file_name = os.path.join(self.PATH ,file)
+		file_name = self.PATH + file
 		#moving compressed file and than decompressing them
 		if  file.endswith(".zip"):
 			try:
-				shutil.move(os.path.join(file_name, self.PATH , str))
+				shutil.move(file_name,self.PATH + str)
 				print "moving " + file + " to " + str + " directory"
 
 			except shutil.Error:
 				print "ERROR: " + file + " already exists in " + " " + str + " directory "
-				print "transfering it to manual_copy folder,you can manually copy it from there"
-				super(organisation_via_compression_decompression,self).make_directory("manual_copy")
-				super(organisation_via_compression_decompression,self).transfer_to_directory(file,"manual_copy")
+				print "Manual copying is recommended. Leaving this file"
 				pass
 			self.decompress_file(file,str)
 		
@@ -64,19 +62,19 @@ class organisation_via_compression_decompression(File_organiser):
 
 	def compressing_file(self,file,str):
 		os.chdir(self.PATH)
-		z = zipfile.ZipFile(os.path.join(self.PATH , str,".zip"), "a",zipfile.ZIP_DEFLATED)
+		z = zipfile.ZipFile(self.PATH + str + ".zip", "a",zipfile.ZIP_DEFLATED)
 		z.write(file)
 		os.remove(file)
 		z.close()
 
 		#if size of compressed file becomes bigger than 1MB, move it to desired directory and decompress it.
-		if os.stat(os.path.join(self.PATH , str,".zip")).st_size > 1000000:
+		if os.stat(self.PATH + str + ".zip").st_size > 1000000:
 			print "size of compressed file exceeds 1MB"
 			print "\n"
-			self.transfer_to_directory( os.path.join(str,".zip"),str)
+			self.transfer_to_directory( str + ".zip",str)
 
 	def Check_size_and_decide(self,file,str):
-		if os.stat(os.path.join(self.PATH , file)).st_size > 1000000 :
+		if os.stat(self.PATH + file).st_size > 1000000 :
 			print "size of file greater than 1MB"
 			print "directly transfering it to the required folder"
 			self.transfer_to_directory(file,str)
@@ -106,7 +104,7 @@ class organisation_via_compression_decompression(File_organiser):
 		
 		# Extra Cases: In linux some word files are not given extensions so we need to run a loop again and sort them accordingly
 		for file in os.listdir( self.PATH ):
-			if file.endswith("") and not file.endswith(".zip") and os.path.isfile(os.path.join(self.PATH , file)) :
+			if file.endswith("") and not file.endswith(".zip") and os.path.isfile(self.PATH + file) :
 				self.Check_size_and_decide(file,"document_files")
 		
 
@@ -123,16 +121,14 @@ class organisation_via_compression_decompression(File_organiser):
 				#if it is not compressed file that is used for fast copying and is a normal user's compressed file 
 				#than transfer it normally to the desired folder
 				else:
-					file_name = os.path.join(self.PATH , file)
+					file_name = self.PATH + file
 					str = "compressed_files"
 					try:
-						shutil.move(file_name,os.path.join(self.PATH , str))
+						shutil.move(file_name,self.PATH + str)
 						print "moving " + file + " to " + str + " directory"
 					except shutil.Error:
 						print "ERROR: " + file + " already exists in " + " " + str + " directory "
-						print "transfering it to manual_copy folder,you can manually copy it from there"
-						super(organisation_via_compression_decompression,self).make_directory("manual_copy")
-						super(organisation_via_compression_decompression,self).transfer_to_directory(file,"manual_copy")
+						print "Manual copying is recommended. Leaving this file"
 						pass
 
 
@@ -143,3 +139,4 @@ def main():
 
 if __name__ == "__main__":
 	main()
+
